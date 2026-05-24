@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Application Tracker</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f3f4f6;
+      color: #222;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: auto;
+    }
+
+    .heading {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .heading h1 {
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+
+    .heading p {
+      color: #666;
+      font-size: 15px;
+    }
+
+    .form-box {
+      background: white;
+      padding: 22px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 25px;
+    }
+
+    .form-box h2 {
+      margin-bottom: 18px;
+      font-size: 22px;
+      color: #111827;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #444;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      padding: 11px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #2563eb;
+    }
+
+    .add-btn {
+      background: #2563eb;
+      color: white;
+      padding: 11px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .add-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .summary-box {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .summary-card {
+      background: white;
+      padding: 18px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .summary-card h3 {
+      font-size: 24px;
+      color: #2563eb;
+    }
+
+    .summary-card p {
+      color: #666;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .list-box {
+      background: white;
+      padding: 22px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .list-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .list-top h2 {
+      font-size: 22px;
+    }
+
+    .filter-select {
+      max-width: 180px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f9fafb;
+      color: #374151;
+    }
+
+    .status {
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .applied {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .interview {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .selected {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .delete-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 7px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background: #b91c1c;
+    }
+
+    .empty-text {
+      text-align: center;
+      color: #777;
+      padding: 20px;
+      display: none;
+    }
+
+    @media (max-width: 760px) {
+      .form-row,
+      .summary-box {
+        grid-template-columns: 1fr;
+      }
+
+      .list-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        background: #f9fafb;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        padding: 10px;
+      }
+
+      td {
+        border-bottom: none;
+        padding: 8px;
+      }
+
+      td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: block;
+        color: #555;
+        margin-bottom: 3px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="heading">
+      <h1>Job Application Tracker</h1>
+    </div>
+
+    <div class="form-box">
+      <h2>Add Application</h2>
+
+      <div class="form-row">
+        <div class="input-group">
+          <label for="companyName">Company Name</label>
+          <input type="text" id="companyName" placeholder="Example: Infosys">
+        </div>
+
+        <div class="input-group">
+          <label for="jobRole">Job Role</label>
+          <input type="text" id="jobRole" placeholder="Example: Web Developer Intern">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="input-group">
+          <label for="applyDate">Applied Date</label>
+          <input type="date" id="applyDate">
+        </div>
+
+        <div class="input-group">
+          <label for="status">Status</label>
+          <select id="status">
+            <option value="Applied">Applied</option>
+            <option value="Interview">Interview</option>
+            <option value="Selected">Selected</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="add-btn" onclick="addApplication()">Add Application</button>
+    </div>
+
+    <div class="summary-box">
+      <div class="summary-card">
+        <h3 id="totalCount">0</h3>
+        <p>Total</p>
+      </div>
+      <div class="summary-card">
+        <h3 id="appliedCount">0</h3>
+        <p>Applied</p>
+      </div>
+      <div class="summary-card">
+        <h3 id="interviewCount">0</h3>
+        <p>Interview</p>
+      </div>
+      <div class="summary-card">
+        <h3 id="selectedCount">0</h3>
+        <p>Selected</p>
+      </div>
+    </div>
+
+    <div class="list-box">
+      <div class="list-top">
+        <h2>My Applications</h2>
+
+        <select id="filterStatus" class="filter-select" onchange="showApplications()">
+          <option value="All">All Status</option>
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Selected">Selected</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="applicationTable"></tbody>
+      </table>
+
+      <p class="empty-text" id="emptyText">No applications added yet.</p>
+    </div>
+  </div>
+
+  <script>
+    let applications = [];
+
+    const companyName = document.getElementById("companyName");
+    const jobRole = document.getElementById("jobRole");
+    const applyDate = document.getElementById("applyDate");
+    const status = document.getElementById("status");
+    const applicationTable = document.getElementById("applicationTable");
+    const emptyText = document.getElementById("emptyText");
+    const filterStatus = document.getElementById("filterStatus");
+
+    function addApplication() {
+      const company = companyName.value.trim();
+      const role = jobRole.value.trim();
+      const date = applyDate.value;
+      const currentStatus = status.value;
+
+      if (company === "" || role === "" || date === "") {
+        alert("Please fill all the details.");
+        return;
+      }
+
+      const application = {
+        id: Date.now(),
+        company: company,
+        role: role,
+        date: date,
+        status: currentStatus
+      };
+
+      applications.push(application);
+
+      companyName.value = "";
+      jobRole.value = "";
+      applyDate.value = "";
+      status.value = "Applied";
+
+      showApplications();
+    }
+
+    function showApplications() {
+      applicationTable.innerHTML = "";
+
+      const selectedFilter = filterStatus.value;
+
+      let filteredApplications = applications;
+
+      if (selectedFilter !== "All") {
+        filteredApplications = applications.filter(function(app) {
+          return app.status === selectedFilter;
+        });
+      }
+
+      filteredApplications.forEach(function(app) {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td data-label="Company">${app.company}</td>
+          <td data-label="Role">${app.role}</td>
+          <td data-label="Date">${app.date}</td>
+          <td data-label="Status"><span class="status ${app.status.toLowerCase()}">${app.status}</span></td>
+          <td data-label="Action"><button class="delete-btn" onclick="deleteApplication(${app.id})">Delete</button></td>
+        `;
+
+        applicationTable.appendChild(row);
+      });
+
+      if (filteredApplications.length === 0) {
+        emptyText.style.display = "block";
+      } else {
+        emptyText.style.display = "none";
+      }
+
+      updateSummary();
+    }
+
+    function deleteApplication(id) {
+      applications = applications.filter(function(app) {
+        return app.id !== id;
+      });
+
+      showApplications();
+    }
+
+    function updateSummary() {
+      document.getElementById("totalCount").textContent = applications.length;
+
+      document.getElementById("appliedCount").textContent = applications.filter(function(app) {
+        return app.status === "Applied";
+      }).length;
+
+      document.getElementById("interviewCount").textContent = applications.filter(function(app) {
+        return app.status === "Interview";
+      }).length;
+
+      document.getElementById("selectedCount").textContent = applications.filter(function(app) {
+        return app.status === "Selected";
+      }).length;
+    }
+
+    showApplications();
+  </script>
+</body>
+</html>
